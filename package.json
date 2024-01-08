@@ -12,6 +12,8 @@
     "@babel/runtime": "^7.23.8",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.3",
     "@mui/material-nextjs": "^5.15.3",
     "next": "14.0.4",
     "react": "^18",
