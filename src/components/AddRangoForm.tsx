@@ -1,3 +1,6 @@
+import RangoMiniComp from '@/components/Rango';
+import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
+import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
 import { Box, Button, Modal, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
 
@@ -73,17 +76,25 @@ const AddRangoForm = ({ handleClose, open }: {
           </>
         ) : (
           <>
-            <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+            {activeStep == 0 &&
+              <RangoMiniComp />
+            }
+            {activeStep == 1 &&
+              <TipoMuestraMiniComp />
+            }
+            {activeStep == 2 &&
+              <RangoMuestraMiniComp />
+            }
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
-              <Button
-                variant='outlined'
-                color="primary"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                volver
-              </Button>
+              {activeStep !== 0 &&
+                <Button
+                  variant='outlined'
+                  color="primary"
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  volver
+                </Button>}
               <Button
                 variant='contained'
                 onClick={handleNext}>
