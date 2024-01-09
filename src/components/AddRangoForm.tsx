@@ -1,9 +1,32 @@
-import { Box, Modal } from '@mui/material';
+import { Box, Button, Modal, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
+import { useState } from 'react';
+
+const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
+
 
 const AddRangoForm = ({ handleClose, open }: {
   handleClose: () => void
   open: boolean
 }) => {
+
+  const [activeStep, setActiveStep] = useState(0);
+
+
+
+  const handleNext = () => {
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
+
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -15,6 +38,7 @@ const AddRangoForm = ({ handleClose, open }: {
     boxShadow: 24,
     p: 4,
   };
+
   return (
 
     <Modal
@@ -24,7 +48,51 @@ const AddRangoForm = ({ handleClose, open }: {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <span>this is a form</span>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((label, index) => {
+            const stepProps: { completed?: boolean } = {};
+            const labelProps: {
+              optional?: React.ReactNode;
+            } = {};
+            return (
+              <Step key={label} {...stepProps}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {activeStep === steps.length ? (
+          <>
+            <Typography sx={{ mt: 2, mb: 1 }}>
+              All steps completed - you&apos;re finished
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+              <Box sx={{ flex: '1 1 auto' }} />
+              <Button onClick={handleReset}>Reset</Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+              <Button
+                variant='outlined'
+                color="primary"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                volver
+              </Button>
+              <Button
+                variant='contained'
+                onClick={handleNext}>
+                {activeStep === steps.length - 1 ? 'finalizar' : 'siguiente'}
+              </Button>
+            </Box>
+          </>
+        )}
+
       </Box>
     </Modal>
   );
