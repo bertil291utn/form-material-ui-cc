@@ -2,11 +2,15 @@
 
 import DataGridBasicTable from '@/components/Table';
 import rangoData from '@/data/data.json';
-import { IconButton, Switch } from '@mui/material';
+import { Button, IconButton, Switch } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CommentSharpIcon from '@mui/icons-material/CommentSharp';
+import AddSharpIcon from '@mui/icons-material/AddSharp';
+import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
+import { useState } from 'react';
+import AddRangoForm from '@/components/AddRangoForm';
 
 
 const columns: Array<GridColDef> = [
@@ -23,7 +27,7 @@ const columns: Array<GridColDef> = [
 
   },
   {
-    width:130,
+    width: 140,
     headerName: 'Acciones',
     field: 'acciones',
     renderCell: (params) => (
@@ -36,6 +40,9 @@ const columns: Array<GridColDef> = [
         </IconButton>
         <IconButton aria-label="comment" size="small" title='Ver comentario'>
           <CommentSharpIcon />
+        </IconButton>
+        <IconButton aria-label="ver" size="small" title='Ver'>
+          <RemoveRedEyeSharpIcon />
         </IconButton>
       </>
     ),
@@ -53,10 +60,30 @@ const rows = rangoData.map(data => (
 
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
-    <DataGridBasicTable
-      columns={columns}
-      rows={rows}
-    />
+    <div>
+      <div
+        style={{ display: 'flex', justifyContent: 'flex-end' }}
+      >
+
+        <Button variant="text" startIcon={<AddSharpIcon />}
+          onClick={handleOpen}
+        >
+          crear rango
+        </Button>
+      </div>
+      <DataGridBasicTable
+        columns={columns}
+        rows={rows}
+      />
+      <AddRangoForm
+        handleClose={handleClose}
+        open={open}
+      />
+    </div>
   )
 }
