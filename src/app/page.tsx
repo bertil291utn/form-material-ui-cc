@@ -6,6 +6,7 @@ import { IconButton, Switch } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CommentSharpIcon from '@mui/icons-material/CommentSharp';
 
 
 const columns: Array<GridColDef> = [
@@ -22,15 +23,19 @@ const columns: Array<GridColDef> = [
 
   },
   {
+    width:130,
     headerName: 'Acciones',
     field: 'acciones',
     renderCell: (params) => (
       <>
-        <IconButton aria-label="edit" size="small">
+        <IconButton aria-label="edit" size="small" title='Editar'>
           <EditIcon />
         </IconButton>
-        <IconButton aria-label="delete" size="small">
+        <IconButton aria-label="delete" size="small" title='Eliminar'>
           <DeleteIcon />
+        </IconButton>
+        <IconButton aria-label="comment" size="small" title='Ver comentario'>
+          <CommentSharpIcon />
         </IconButton>
       </>
     ),
@@ -43,7 +48,6 @@ const rows = rangoData.map(data => (
     minimo: data.minimum,
     maximo: data.maximum,
     estado: data.status,
-    acciones: undefined,
   }
 ));
 
