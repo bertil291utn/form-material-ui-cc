@@ -2,16 +2,25 @@
 
 import DataGridBasicTable from '@/components/Table';
 import rangoData from '@/data/data.json';
-import { IconButton } from '@mui/material';
+import { IconButton, Switch } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-const columns:Array<GridColDef> = [
+const columns: Array<GridColDef> = [
   { headerName: 'Minimo', field: 'minimo' },
   { headerName: 'Maximo', field: 'maximo' },
-  { headerName: 'Estado', field: 'estado' },
+  {
+    headerName: 'Estado', field: 'estado',
+    renderCell: (params) =>
+    (
+      <>
+        <Switch {...{ inputProps: { 'aria-label': 'Switch demo' } }} checked={params.row.estado} />
+      </>
+    )
+
+  },
   {
     headerName: 'Acciones',
     field: 'acciones',
