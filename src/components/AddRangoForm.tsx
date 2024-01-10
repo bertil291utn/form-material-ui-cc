@@ -35,7 +35,7 @@ const AddRangoForm = ({ handleClose, open }: {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 800,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -76,15 +76,20 @@ const AddRangoForm = ({ handleClose, open }: {
           </>
         ) : (
           <>
-            {activeStep == 0 &&
-              <RangoMiniComp />
-            }
-            {activeStep == 1 &&
-              <TipoMuestraMiniComp />
-            }
-            {activeStep == 2 &&
-              <RangoMuestraMiniComp />
-            }
+            <div
+              style={{ marginTop: '2rem', marginBottom: '2rem' }}
+            >
+
+              {activeStep == 0 &&
+                <RangoMiniComp />
+              }
+              {activeStep == 1 &&
+                <TipoMuestraMiniComp />
+              }
+              {activeStep == 2 &&
+                <RangoMuestraMiniComp />
+              }
+            </div>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
               {activeStep !== 0 &&
                 <Button
