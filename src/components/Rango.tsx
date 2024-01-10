@@ -10,8 +10,8 @@ const RangoMiniComp = () => {
   return (
     <div>
       <Box sx={style}>
-        <TextField id="standard-basic" label="Valor minimo" variant="standard" name='vminimo' />
-        <TextField id="standard-basic" label="Valor Maximo" variant="standard" name='vmaximo' />
+        <TextField id="standard-basic-v-minimo" label="Valor minimo" variant="standard" name='vminimo' type='number' />
+        <TextField id="standard-basic-v-maximo" label="Valor Maximo" variant="standard" name='vmaximo' type='number' />
 
       </Box>
       <Button
