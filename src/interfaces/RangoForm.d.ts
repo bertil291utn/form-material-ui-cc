@@ -1,11 +1,11 @@
 export interface RangoForm {
-  rango: Array<RangeCreateInput>
+  rangos: Array<RangeCreateInput>
 }
 
 interface RangeCreateInput {
   id: string
-  minimum: number;
-  maximum: number;
+  minimum: string;
+  maximum: string;
   samplings?: Array<SamplingCreateInput>;
 }
 

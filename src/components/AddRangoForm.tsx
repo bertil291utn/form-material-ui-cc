@@ -15,12 +15,14 @@ const AddRangoForm = ({ handleClose, open }: {
   open: boolean
 }) => {
 
+  const useFormHook = useForm<RangoForm>();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<RangoForm>()
+  } = useFormHook;
+
   const [activeStep, setActiveStep] = useState(0);
 
 
@@ -94,7 +96,7 @@ const AddRangoForm = ({ handleClose, open }: {
 
                 {activeStep == PageType.RANGO &&
                   <RangoMiniComp
-                    register={register}
+                  useFormHook={useFormHook}
                   />
                 }
                 {activeStep == PageType.TIPO_MUESTRA &&
