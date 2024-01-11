@@ -1,8 +1,11 @@
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
+import { RangoForm } from '@/interfaces/RangoForm';
+import { PageType } from '@/interfaces/RangoStep.enum';
 import { Box, Button, Modal, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
 
@@ -12,6 +15,12 @@ const AddRangoForm = ({ handleClose, open }: {
   open: boolean
 }) => {
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<RangoForm>()
   const [activeStep, setActiveStep] = useState(0);
 
 
@@ -41,6 +50,8 @@ const AddRangoForm = ({ handleClose, open }: {
     boxShadow: 24,
     p: 4,
   };
+
+  const onSubmit: SubmitHandler<RangoForm> = (data) => console.log(data)
 
   return (
 
@@ -79,16 +90,20 @@ const AddRangoForm = ({ handleClose, open }: {
             <div
               style={{ marginTop: '2rem', marginBottom: '2rem' }}
             >
+              <form onSubmit={handleSubmit(onSubmit)}>
 
-              {activeStep == 0 &&
-                <RangoMiniComp />
-              }
-              {activeStep == 1 &&
-                <TipoMuestraMiniComp />
-              }
-              {activeStep == 2 &&
-                <RangoMuestraMiniComp />
-              }
+                {activeStep == PageType.RANGO &&
+                  <RangoMiniComp
+                    register={register}
+                  />
+                }
+                {activeStep == PageType.TIPO_MUESTRA &&
+                  <TipoMuestraMiniComp />
+                }
+                {activeStep == PageType.RANGO_MUESTRA &&
+                  <RangoMuestraMiniComp />
+                }
+              </form>
             </div>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
               {activeStep !== 0 &&
