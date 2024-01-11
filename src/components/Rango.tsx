@@ -18,12 +18,15 @@ const RangoMiniComp = ({
     watch,
     formState: { errors },
   } = useFormHook;
+
+  const INIT_RANGOS = {
+    id: '1',
+    minimum: '',
+    maximum: ''
+  }
+
   const [rangeInputs, setRangeInputs] = useState<Array<RangeCreateInput>>([
-    {
-      id: '1',
-      minimum: '',
-      maximum: ''
-    }
+    INIT_RANGOS
   ]);
 
   setValue("rangos", rangeInputs)
@@ -31,12 +34,21 @@ const RangoMiniComp = ({
 
   const style = {
     display: 'flex',
-    gap: 2,
+    flexDirection:'column',
+    gap: 3,
   }
 
   const handleSelectionProd = (ev: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, indexRange: number) => {
     const product = ev.target.value;
   }
+
+
+  const handleAddRangos = () => {
+    const updatedRange: any = getValues()?.rangos || [];
+    updatedRange.push([{ ...INIT_RANGOS, id: getValues()?.rangos.length + 1 }]);
+    setRangeInputs(updatedRange);
+    setValue("rangos", updatedRange);
+  };
 
 
 
@@ -46,7 +58,8 @@ const RangoMiniComp = ({
         {rangeInputs?.map((_, indexRange) => {
           const currentVal = (getValues().rangos as Array<RangeCreateInput>)[indexRange]
           return (
-            <div key={`index-Range-${indexRange}`}>
+            <div key={`index-Range-${indexRange}`}
+              style={{ display: 'flex', gap: '3rem' }}>
 
               <TextField
                 {...register(`rangos.${indexRange}.minimum`, { required: true })}
@@ -64,6 +77,7 @@ const RangoMiniComp = ({
 
       </Box>
       <Button
+        onClick={handleAddRangos}
         startIcon={<AddSharpIcon />}
         variant='outlined'
         color="primary"
