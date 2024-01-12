@@ -1,7 +1,7 @@
 
 import { Box, Button, IconButton, TextField, Typography } from '@mui/material';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
-import { UseFormRegister, UseFormReturn } from 'react-hook-form';
+import { Controller, UseFormRegister, UseFormReturn } from 'react-hook-form';
 import { RangeCreateInput, RangoForm } from '@/interfaces/RangoForm';
 import { ChangeEvent, useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -12,6 +12,7 @@ const RangoMiniComp = ({
   useFormHook: UseFormReturn<RangoForm, any, undefined>
 }) => {
   const {
+    control,
     register,
     getValues,
     setValue,
@@ -47,10 +48,10 @@ const RangoMiniComp = ({
 
 
   const handleAddRangos = () => {
-    const updatedRange: any = getValues()?.rangos || [];
+    const updatedRange: any = [...getValues()?.rangos] || [];
     updatedRange.push({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() });
     setRangeInputs(updatedRange);
-    setValue("rangos", updatedRange);
+    // setValue("rangos", updatedRange);
   };
   console.log(getValues())
 
@@ -64,17 +65,24 @@ const RangoMiniComp = ({
             <div key={`index-Range-${indexRange}`}
               style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
 
-              <TextField
-                // onChange={(e) => handleSelectionProd(e, indexRange)}
-                // defaultValue={currentVal.minimum}
-                {...register(`rangos[${indexRange}].minimum` as any, { required: true })}
-                id="standard-basic-v-minimo" label="Valor minimo" variant="standard" name='vminimo' type='number' />
-              <TextField
-                // defaultValue={currentVal.maximum}
-                {...register(`rangos[${indexRange}].maximum` as any, { required: true })}
-                // onChange={(e) => handleSelectionProd(e, indexRange)}
-                id="standard-basic-v-maximo" label="Valor Maximo" variant="standard" name='vmaximo' type='number' />
-
+              <Controller
+                name={`rangos.${indexRange}.minimum`}
+                control={control}
+                render={({ field }) =>
+                  <TextField
+                    {...field}
+                    id="standard-basic-v-minimo" label="Valor minimo" variant="standard" name='minimum' type='number' />
+                }
+              />
+              <Controller
+                name={`rangos.${indexRange}.maximum`}
+                control={control}
+                render={({ field }) =>
+                  <TextField
+                    {...field}
+                    id="standard-basic-v-maximum" label="Valor maximum" variant="standard" name='maximum' type='number' />
+                }
+              />
               {arr.length > 1 &&
                 <IconButton aria-label="delete" size="small" title='Eliminar rango'>
                   <DeleteIcon />
