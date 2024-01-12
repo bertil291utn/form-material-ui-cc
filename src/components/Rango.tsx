@@ -65,19 +65,25 @@ const RangoMiniComp = ({
                 <Controller
                   name={`rangos.${indexRange}.minimum`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field }) =>
                     <TextField
                       {...field}
-                      id="standard-basic-v-minimo" label="Valor minimo" variant="standard" name='minimum' type='number' />
+                      error={errors.rangos ? !!errors.rangos[indexRange]?.minimum : false}
+                      helperText={(errors.rangos && !!errors.rangos[indexRange]?.minimum) && `Valor minimo requerido`}
+                      id="standard-basic-v-minimum" label="Valor minimo" variant="standard" name='minimum' type='number' />
                   }
                 />
                 <Controller
                   name={`rangos.${indexRange}.maximum`}
                   control={control}
+                  rules={{ required: true }}
                   render={({ field }) =>
                     <TextField
                       {...field}
-                      id="standard-basic-v-maximum" label="Valor maximum" variant="standard" name='maximum' type='number' />
+                      error={errors.rangos ? !!errors.rangos[indexRange]?.maximum : false}
+                      helperText={(errors.rangos && !!errors.rangos[indexRange]?.maximum) && `Valor maximo requerido`}
+                      id="standard-basic-v-maximum" label="Valor maximo" variant="standard" name='maximum' type='number' />
                   }
                 />
                 {arr.length > 1 &&
