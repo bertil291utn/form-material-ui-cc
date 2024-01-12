@@ -5,7 +5,7 @@ import { RangoForm } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
 import { Box, Button, Modal, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
 
@@ -14,15 +14,28 @@ const AddRangoForm = ({ handleClose, open }: {
   handleClose: () => void
   open: boolean
 }) => {
+  const INIT_RANGOS = {
+    id: '1',
+    minimum: '',
+    maximum: ''
+  }
 
-  const useFormHook = useForm<RangoForm>();
+  const useFormHook = useForm<RangoForm>({
+    defaultValues: { rangos: [INIT_RANGOS] }
+  });
+
   const {
+    control,
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useFormHook;
 
+  const _useFieldArray = useFieldArray({
+    control,
+    name: "rangos"
+  });
   const [activeStep, setActiveStep] = useState(0);
 
 
@@ -96,7 +109,8 @@ const AddRangoForm = ({ handleClose, open }: {
 
                 {activeStep == PageType.RANGO &&
                   <RangoMiniComp
-                  useFormHook={useFormHook}
+                    useFormHook={useFormHook}
+                    useFieldArray={_useFieldArray}
                   />
                 }
                 {activeStep == PageType.TIPO_MUESTRA &&
