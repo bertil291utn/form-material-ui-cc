@@ -4,7 +4,7 @@ import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { FocusEvent } from 'react';
+import { FocusEvent, useEffect, useState } from 'react';
 
 const RangoMiniComp = ({
   useFormHook,
@@ -33,6 +33,8 @@ const RangoMiniComp = ({
 
 
   const { fields: rangeInputs, append, remove } = useFieldArray
+  const [isValidRangeInputValid, setIsValidRangeInputValid] = useState(false)
+
 
   const style = {
     display: 'flex',
@@ -42,20 +44,24 @@ const RangoMiniComp = ({
 
 
 
-  const handleAddRangos = () => {
-    append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
+
+  const handleAddRangos = async () => {
+    isValidRangeInputValid && append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
+    setIsValidRangeInputValid(false)
   };
   console.log(getValues())
 
 
-  const _handleRemoveDetail = (index: number) => () => {
+  const _handleRemoveDetail = (index: number) => async () => {
     remove(index)
+    setIsValidRangeInputValid(await trigger("rangos"))
 
   }
 
 
-  const handleBlurAction = (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, indexRange: number) => {
-    trigger(`rangos.${indexRange}.${e.target.name}` as any);
+  const handleBlurAction = async (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, indexRange: number) => {
+    const _IsValidRangeInputValid = await trigger(`rangos.${indexRange}.${e.target.name}` as any);
+    setIsValidRangeInputValid(_IsValidRangeInputValid)
 
   }
 
