@@ -4,7 +4,7 @@ import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { FocusEvent, useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const RangoMiniComp = ({
   useFormHook,
@@ -16,12 +16,8 @@ const RangoMiniComp = ({
   const {
     trigger,
     control,
-    register,
     getValues,
-    setValue,
-    handleSubmit,
-    watch,
-    formState: { errors },
+    formState,
   } = useFormHook;
 
   const INIT_RANGOS = {
@@ -46,8 +42,10 @@ const RangoMiniComp = ({
 
 
   const handleAddRangos = async () => {
-    isValidRangeInputValid && append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
-    setIsValidRangeInputValid(false)
+    const isValidRangos = await trigger("rangos")
+    if (isValidRangos) {
+      append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
+    }
   };
   console.log(getValues())
 
@@ -59,10 +57,8 @@ const RangoMiniComp = ({
   }
 
 
-  const handleBlurAction = async (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>, indexRange: number) => {
-    const _IsValidRangeInputValid = await trigger(`rangos.${indexRange}.${e.target.name}` as any);
-    setIsValidRangeInputValid(_IsValidRangeInputValid)
-
+  const handleBlurAction = () => {
+    trigger("rangos")
   }
 
   return (
@@ -82,11 +78,13 @@ const RangoMiniComp = ({
 
                   render={({ field }) =>
                     <TextField
+                      error={formState.errors.rangos ? !!formState.errors.rangos[indexRange]?.minimum : false}
+                      helperText={(formState.errors.rangos && !!formState.errors.rangos[indexRange]?.minimum) && `Valor minimo requerido`}
+                      id="standard-basic-v-minimum" label="Valor minimo" variant="standard"
+                      type='number'
                       {...field}
-                      onBlur={(e) => handleBlurAction(e, indexRange)}
-                      error={errors.rangos ? !!errors.rangos[indexRange]?.minimum : false}
-                      helperText={(errors.rangos && !!errors.rangos[indexRange]?.minimum) && `Valor minimo requerido`}
-                      id="standard-basic-v-minimum" label="Valor minimo" variant="standard" name='minimum' type='number' />
+                      onBlur={handleBlurAction}
+                    />
                   }
                 />
                 <Controller
@@ -95,11 +93,13 @@ const RangoMiniComp = ({
                   rules={{ required: true }}
                   render={({ field }) =>
                     <TextField
+                      error={formState.errors.rangos ? !!formState.errors.rangos[indexRange]?.maximum : false}
+                      helperText={(formState.errors.rangos && !!formState.errors.rangos[indexRange]?.maximum) && `Valor maximo requerido`}
+                      id="standard-basic-v-maximum" label="Valor maximo" variant="standard"
+                      type='number'
                       {...field}
-                      onBlur={(e) => handleBlurAction(e, indexRange)}
-                      error={errors.rangos ? !!errors.rangos[indexRange]?.maximum : false}
-                      helperText={(errors.rangos && !!errors.rangos[indexRange]?.maximum) && `Valor maximo requerido`}
-                      id="standard-basic-v-maximum" label="Valor maximo" variant="standard" name='maximum' type='number' />
+                      onBlur={handleBlurAction}
+                    />
                   }
                 />
                 {arr.length > 1 &&
