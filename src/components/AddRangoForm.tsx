@@ -1,3 +1,4 @@
+import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
@@ -47,7 +48,14 @@ const AddRangoForm = ({ handleClose, open }: {
     const isValidRangos = await trigger("rangos");
     const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
     const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
-    if (isValidRangos) { setActiveStep((prevActiveStep) => prevActiveStep + 1); }
+    if (!IsValidRangeDistance({ min, max })) {
+      handleAlertMessage(min, max)
+      return;
+    }
+
+    if (isValidRangos) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
 
   };
 
@@ -82,10 +90,9 @@ const AddRangoForm = ({ handleClose, open }: {
     setDistanceRangeErrorMsg('');
   };
 
-  const handleDisplayMessage = (min: number, max: number) => {
-    setDistanceRangeErrorMsg(`${max} debe ser mayor a ${min}`);
 
-    return;
+  const handleAlertMessage = (min: number, max: number) => {
+    setDistanceRangeErrorMsg(`${max} (val maximo) debe ser mayor a ${min} (val minimo)`);
   }
 
   return (
@@ -131,6 +138,7 @@ const AddRangoForm = ({ handleClose, open }: {
                   <RangoMiniComp
                     useFormHook={useFormHook}
                     useFieldArray={_useFieldArray}
+                    handleAlertMessage={handleAlertMessage}
                   />
                 }
                 {activeStep == PageType.TIPO_MUESTRA &&
@@ -156,6 +164,11 @@ const AddRangoForm = ({ handleClose, open }: {
                 onClick={handleNext}>
                 {activeStep === steps.length - 1 ? 'finalizar' : 'siguiente'}
               </Button>
+              <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} onClose={handleCloseAlert}>
+                <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
+                  {distanceRangeErrorMsg}
+                </Alert>
+              </Snackbar>
             </Box>
           </>
         )}

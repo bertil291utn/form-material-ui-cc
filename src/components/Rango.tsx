@@ -10,9 +10,11 @@ import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
 const RangoMiniComp = ({
   useFormHook,
   useFieldArray,
+  handleAlertMessage
 }: {
   useFormHook: UseFormReturn<RangoForm, any, undefined>,
   useFieldArray: UseFieldArrayReturn<RangoForm, "rangos", "id">,
+  handleAlertMessage: (min: number, max: number) => void
 }) => {
   const {
     trigger,
@@ -45,7 +47,12 @@ const RangoMiniComp = ({
   const handleAddRangos = async () => {
     const isValidRangos = await trigger("rangos");
     const lastMaximum = [...getValues()?.rangos].pop()?.maximum as string
-
+    const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
+    const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
+    if (!IsValidRangeDistance({ min, max })) {
+      handleAlertMessage(min, max)
+      return;
+    }
 
     if (isValidRangos) {
       append(
