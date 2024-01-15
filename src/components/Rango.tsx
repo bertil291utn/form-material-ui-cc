@@ -44,10 +44,17 @@ const RangoMiniComp = ({
 
   const handleAddRangos = async () => {
     const isValidRangos = await trigger("rangos");
-   
+    const lastMaximum = [...getValues()?.rangos].pop()?.maximum as string
+
 
     if (isValidRangos) {
-      append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
+      append(
+        {
+          ...INIT_RANGOS,
+          id: (getValues()?.rangos.length + 1).toString(),
+          minimum: (Number(lastMaximum) + 1).toString()
+        }
+      )
     }
   };
   console.log(getValues())
@@ -62,9 +69,8 @@ const RangoMiniComp = ({
 
   const handleBlurAction = async (
     e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
-    indexRange: number
   ) => {
-    trigger(`rangos.${indexRange}.${e.target.name}` as any);
+    trigger(e.target.name as any);
 
   }
 
@@ -93,7 +99,7 @@ const RangoMiniComp = ({
                       id="standard-basic-v-minimum" label="Valor minimo" variant="standard"
                       type='number'
                       {...field}
-                      onBlur={(e) => handleBlurAction(e, indexRange)}
+                      onBlur={handleBlurAction}
                     />
                   }
                 />
@@ -108,7 +114,7 @@ const RangoMiniComp = ({
                       id="standard-basic-v-maximum" label="Valor maximo" variant="standard"
                       type='number'
                       {...field}
-                      onBlur={(e) => handleBlurAction(e, indexRange)}
+                      onBlur={handleBlurAction}
                     />
                   }
                 />
