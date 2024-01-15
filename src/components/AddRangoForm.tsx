@@ -18,7 +18,11 @@ const AddRangoForm = ({ handleClose, open }: {
   const INIT_RANGOS = {
     id: '1',
     minimum: '',
-    maximum: ''
+    maximum: '',
+    samplings: [{
+      id: '1',
+      name: ''
+    }]
   }
 
   const useFormHook = useForm<RangoForm>({
@@ -35,10 +39,6 @@ const AddRangoForm = ({ handleClose, open }: {
     formState: { errors },
   } = useFormHook;
 
-  const _useFieldArray = useFieldArray({
-    control,
-    name: "rangos"
-  });
   const [activeStep, setActiveStep] = useState(0);
   const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
 
@@ -141,7 +141,9 @@ const AddRangoForm = ({ handleClose, open }: {
                   />
                 }
                 {activeStep == PageType.TIPO_MUESTRA &&
-                  <TipoMuestraMiniComp />
+                  <TipoMuestraMiniComp
+                    useFormHook={useFormHook}
+                  />
                 }
                 {activeStep == PageType.RANGO_MUESTRA &&
                   <RangoMuestraMiniComp />

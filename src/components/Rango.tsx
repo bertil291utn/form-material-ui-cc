@@ -33,7 +33,6 @@ const RangoMiniComp = ({
     control,
     name: "rangos"
   })
-  const [isValidRangeInputValid, setIsValidRangeInputValid] = useState(false)
 
 
 
@@ -69,7 +68,6 @@ const RangoMiniComp = ({
 
   const _handleRemoveDetail = (index: number) => async () => {
     remove(index)
-    setIsValidRangeInputValid(await trigger("rangos"))
 
   }
 
