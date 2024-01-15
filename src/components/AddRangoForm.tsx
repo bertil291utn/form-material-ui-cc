@@ -3,7 +3,7 @@ import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
 import { RangoForm } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
-import { Box, Button, Modal, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
+import { Alert, Box, Button, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
@@ -25,6 +25,7 @@ const AddRangoForm = ({ handleClose, open }: {
   });
 
   const {
+    getValues,
     control,
     trigger,
     register,
@@ -38,12 +39,16 @@ const AddRangoForm = ({ handleClose, open }: {
     name: "rangos"
   });
   const [activeStep, setActiveStep] = useState(0);
+  const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
 
 
 
   const handleNext = async () => {
-    const isValidRangos = await trigger("rangos")
+    const isValidRangos = await trigger("rangos");
+    const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
+    const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
     if (isValidRangos) { setActiveStep((prevActiveStep) => prevActiveStep + 1); }
+
   };
 
   const handleBack = () => {
@@ -68,6 +73,20 @@ const AddRangoForm = ({ handleClose, open }: {
   };
 
   const onSubmit: SubmitHandler<RangoForm> = (data) => console.log(data)
+
+  const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setDistanceRangeErrorMsg('');
+  };
+
+  const handleDisplayMessage = (min: number, max: number) => {
+    setDistanceRangeErrorMsg(`${max} debe ser mayor a ${min}`);
+
+    return;
+  }
 
   return (
 

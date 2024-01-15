@@ -4,14 +4,15 @@ import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { FocusEvent, useState } from 'react';
+import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
 
 const RangoMiniComp = ({
   useFormHook,
-  useFieldArray
+  useFieldArray,
 }: {
   useFormHook: UseFormReturn<RangoForm, any, undefined>,
-  useFieldArray: UseFieldArrayReturn<RangoForm, "rangos", "id">
+  useFieldArray: UseFieldArrayReturn<RangoForm, "rangos", "id">,
 }) => {
   const {
     trigger,
@@ -30,7 +31,7 @@ const RangoMiniComp = ({
 
   const { fields: rangeInputs, append, remove } = useFieldArray
   const [isValidRangeInputValid, setIsValidRangeInputValid] = useState(false)
-  const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
+
 
 
   const style = {
@@ -40,18 +41,10 @@ const RangoMiniComp = ({
   }
 
 
-  const IsValidRangeDistance = ({ min, max }: { min: number, max: number }) => {
-    return max - min > 0
-  }
 
   const handleAddRangos = async () => {
     const isValidRangos = await trigger("rangos");
-    const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
-    const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
-    if (!IsValidRangeDistance({ min, max })) {
-      setDistanceRangeErrorMsg('hola');
-      return;
-    }
+   
 
     if (isValidRangos) {
       append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
@@ -67,9 +60,16 @@ const RangoMiniComp = ({
   }
 
 
-  const handleBlurAction = () => {
-    trigger("rangos")
+  const handleBlurAction = async (
+    e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
+    indexRange: number
+  ) => {
+    trigger(`rangos.${indexRange}.${e.target.name}` as any);
+
   }
+
+
+
 
   return (
     <div>
@@ -93,7 +93,7 @@ const RangoMiniComp = ({
                       id="standard-basic-v-minimum" label="Valor minimo" variant="standard"
                       type='number'
                       {...field}
-                      onBlur={handleBlurAction}
+                      onBlur={(e) => handleBlurAction(e, indexRange)}
                     />
                   }
                 />
@@ -108,7 +108,7 @@ const RangoMiniComp = ({
                       id="standard-basic-v-maximum" label="Valor maximo" variant="standard"
                       type='number'
                       {...field}
-                      onBlur={handleBlurAction}
+                      onBlur={(e) => handleBlurAction(e, indexRange)}
                     />
                   }
                 />
@@ -136,11 +136,7 @@ const RangoMiniComp = ({
       >
         Agregar
       </Button>
-      <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} >
-        <Alert severity="warning" sx={{ width: '100%' }}>
-          {distanceRangeErrorMsg}
-        </Alert>
-      </Snackbar>
+
 
     </div >
   );
