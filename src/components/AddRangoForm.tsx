@@ -137,7 +137,6 @@ const AddRangoForm = ({ handleClose, open }: {
                 {activeStep == PageType.RANGO &&
                   <RangoMiniComp
                     useFormHook={useFormHook}
-                    useFieldArray={_useFieldArray}
                     handleAlertMessage={handleAlertMessage}
                   />
                 }

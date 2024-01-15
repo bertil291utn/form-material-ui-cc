@@ -1,7 +1,7 @@
 
 import { Alert, Box, Button, IconButton, Snackbar, TextField } from '@mui/material';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
-import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
+import { Controller, UseFieldArrayReturn, UseFormReturn,useFieldArray } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FocusEvent, useState } from 'react';
@@ -9,11 +9,9 @@ import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
 
 const RangoMiniComp = ({
   useFormHook,
-  useFieldArray,
   handleAlertMessage
 }: {
   useFormHook: UseFormReturn<RangoForm, any, undefined>,
-  useFieldArray: UseFieldArrayReturn<RangoForm, "rangos", "id">,
   handleAlertMessage: (min: number, max: number) => void
 }) => {
   const {
@@ -31,7 +29,10 @@ const RangoMiniComp = ({
 
 
 
-  const { fields: rangeInputs, append, remove } = useFieldArray
+  const { fields: rangeInputs, append, remove } = useFieldArray({
+    control,
+    name: "rangos"
+  })
   const [isValidRangeInputValid, setIsValidRangeInputValid] = useState(false)
 
 
@@ -64,7 +65,6 @@ const RangoMiniComp = ({
       )
     }
   };
-  console.log(getValues())
 
 
   const _handleRemoveDetail = (index: number) => async () => {
