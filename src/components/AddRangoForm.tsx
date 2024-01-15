@@ -26,6 +26,7 @@ const AddRangoForm = ({ handleClose, open }: {
 
   const {
     control,
+    trigger,
     register,
     handleSubmit,
     watch,
@@ -40,9 +41,9 @@ const AddRangoForm = ({ handleClose, open }: {
 
 
 
-  const handleNext = () => {
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleNext = async () => {
+    const isValidRangos = await trigger("rangos")
+    if (isValidRangos) { setActiveStep((prevActiveStep) => prevActiveStep + 1); }
   };
 
   const handleBack = () => {
