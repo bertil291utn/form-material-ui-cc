@@ -1,5 +1,5 @@
 
-import { Box, Button, IconButton, TextField } from '@mui/material';
+import { Alert, Box, Button, IconButton, Snackbar, TextField } from '@mui/material';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
 import { Controller, UseFieldArrayReturn, UseFormReturn } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
@@ -30,6 +30,7 @@ const RangoMiniComp = ({
 
   const { fields: rangeInputs, append, remove } = useFieldArray
   const [isValidRangeInputValid, setIsValidRangeInputValid] = useState(false)
+  const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
 
 
   const style = {
@@ -39,10 +40,19 @@ const RangoMiniComp = ({
   }
 
 
-
+  const IsValidRangeDistance = ({ min, max }: { min: number, max: number }) => {
+    return max - min > 0
+  }
 
   const handleAddRangos = async () => {
-    const isValidRangos = await trigger("rangos")
+    const isValidRangos = await trigger("rangos");
+    const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
+    const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
+    if (!IsValidRangeDistance({ min, max })) {
+      setDistanceRangeErrorMsg('hola');
+      return;
+    }
+
     if (isValidRangos) {
       append({ ...INIT_RANGOS, id: (getValues()?.rangos.length + 1).toString() })
     }
@@ -111,6 +121,7 @@ const RangoMiniComp = ({
                   </IconButton>
                 }
               </div>
+
             )
           })
         }
@@ -125,6 +136,12 @@ const RangoMiniComp = ({
       >
         Agregar
       </Button>
+      <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} >
+        <Alert severity="warning" sx={{ width: '100%' }}>
+          {distanceRangeErrorMsg}
+        </Alert>
+      </Snackbar>
+
     </div >
   );
 }
