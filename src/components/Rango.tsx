@@ -5,7 +5,7 @@ import { Controller, UseFieldArrayReturn, UseFormReturn, useFieldArray } from 'r
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FocusEvent, useState } from 'react';
-import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
+import { IsValidRangeDistance } from '@/utils/Rango.utils';
 
 const RangoMiniComp = ({
   useFormHook,

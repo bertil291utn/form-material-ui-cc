@@ -1,5 +1,5 @@
-import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
-import { sleep } from '@/app/utils/sleep';
+import { IsValidRangeDistance } from '@/utils/Rango.utils';
+import { sleep } from '@/utils/sleep';
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
