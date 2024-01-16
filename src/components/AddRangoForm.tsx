@@ -54,7 +54,7 @@ const AddRangoForm = ({ handleClose, open }: {
       return;
     }
     if (!isValidRangos || !isValidNames) { return; }
-    
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
 
@@ -147,7 +147,9 @@ const AddRangoForm = ({ handleClose, open }: {
                   />
                 }
                 {activeStep == PageType.RANGO_MUESTRA &&
-                  <RangoMuestraMiniComp />
+                  <RangoMuestraMiniComp
+                    useFormHook={useFormHook}
+                  />
                 }
               </form>
             </div>

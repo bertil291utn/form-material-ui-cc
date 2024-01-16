@@ -32,7 +32,6 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
     remove(index)
 
   }
-  console.log(getValues())
 
 
   const handleAddNames = async () => {
@@ -71,7 +70,7 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
                     <TextField
                       error={formState.errors.rangos ? !!(formState.errors.rangos[0] as any).samplings[indexMuestreo]?.name : false}
                       helperText={(formState.errors.rangos && !!(formState.errors.rangos[0] as any).samplings[indexMuestreo]?.name ) && `Nombre requerido`}
-                      id="standard-basic-v-maximum" label="Nombre" variant="standard"
+                      id="standard-basic-name" label="Nombre" variant="standard"
                       type='text'
                       {...field}
                       onBlur={handleBlurAction}

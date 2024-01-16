@@ -6,6 +6,7 @@ interface RangeCreateInput {
   id: string
   minimum: string;
   maximum: string;
+  tempDisplay?: string;
   samplings?: Array<SamplingCreateInput>;
 }
 
