@@ -1,10 +1,11 @@
 import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
+import { sleep } from '@/app/utils/sleep';
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
 import { RangeCreateInput, RangoForm, SamplingCreateInput } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
-import { Alert, Box, Button, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
@@ -21,7 +22,8 @@ const AddRangoForm = ({ handleClose, open }: {
     maximum: '',
     samplings: [{
       id: '1',
-      name: ''
+      name: '',
+      samplingRange: { numberSamples: '' }
     }]
   }
 
@@ -30,6 +32,7 @@ const AddRangoForm = ({ handleClose, open }: {
   });
 
   const {
+    reset,
     setValue,
     getValues,
     control,
@@ -67,15 +70,11 @@ const AddRangoForm = ({ handleClose, open }: {
         ))
       )
     }
-    if (activeStep == PageType.RANGO_MUESTRA) { 
-      console.log('add range')
-      //wait 2 sec then close modal
-      //TODO: store in a redux object to add, edit & view
-    }
+
+      
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  console.log(watch("rangos"))
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -98,7 +97,17 @@ const AddRangoForm = ({ handleClose, open }: {
     p: 4,
   };
 
-  const onSubmit: SubmitHandler<RangoForm> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<RangoForm> = async(data) => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    await sleep(2000)
+    handleClose()
+    reset()
+    setActiveStep(0);
+    console.log(data)
+
+    //TODO: store in a redux object to add, edit & view
+  
+  }
 
   const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -137,20 +146,16 @@ const AddRangoForm = ({ handleClose, open }: {
         </Stepper>
         {activeStep === steps.length ? (
           <>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset}>Reset</Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
+              <CircularProgress />
             </Box>
           </>
         ) : (
           <>
-            <div
-              style={{ marginTop: '2rem', marginBottom: '2rem' }}
-            >
-              <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div
+                style={{ marginTop: '2rem', marginBottom: '2rem' }}
+              >
 
                 {activeStep == PageType.RANGO &&
                   <RangoMiniComp
@@ -168,29 +173,40 @@ const AddRangoForm = ({ handleClose, open }: {
                     useFormHook={useFormHook}
                   />
                 }
-              </form>
-            </div>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
-              {activeStep !== 0 &&
-                <Button
-                  variant='outlined'
-                  color="primary"
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
-                >
-                  volver
-                </Button>}
-              <Button
-                variant='contained'
-                onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'finalizar' : 'siguiente'}
-              </Button>
-              <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} onClose={handleCloseAlert}>
-                <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
-                  {distanceRangeErrorMsg}
-                </Alert>
-              </Snackbar>
-            </Box>
+              </div>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+                {activeStep !== 0 &&
+                  <Button
+                    variant='outlined'
+                    type='button'
+                    color="primary"
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    volver
+                  </Button>}
+                {activeStep !== steps.length - 1 ?
+                  <Button
+                    type={'button'}
+                    variant='contained'
+                    onClick={handleNext}>
+                    {'siguiente'}
+                  </Button>
+                  :
+                  <Button
+                    type={'submit'}
+                    variant='contained'
+                  >
+                    {'finalizar'}
+                  </Button>
+                }
+                <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} onClose={handleCloseAlert}>
+                  <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
+                    {distanceRangeErrorMsg}
+                  </Alert>
+                </Snackbar>
+              </Box>
+            </form>
           </>
         )}
 
