@@ -1,4 +1,4 @@
-import { RangeCreateInput, RangoForm } from '@/interfaces/RangoForm';
+import { RangeCreateInput, RangoForm, SamplingCreateInput } from '@/interfaces/RangoForm';
 import { Box, TextField } from '@mui/material';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
@@ -14,7 +14,8 @@ const RangoMuestraMiniComp = ({
     formState,
   } = useFormHook;
 
-  const rangeArr = [...getValues().rangos]
+  console.log(getValues())
+
   return (
     <Box>
       <RangeComponente
@@ -43,8 +44,9 @@ const RangeComponente = ({
   return rangeArr?.map((rangeItem, indexRange, arr) => {
     return (
       <div
-        key={`index-range-${rangeItem.id}`}
-        style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
+        key={`index-range-c-${rangeItem.id}`}
+        style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}
+      >
 
         <Controller
           disabled
@@ -59,10 +61,70 @@ const RangeComponente = ({
             />
           }
         />
+        <div
+          style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}
+        >
+          <MuestreoComponente
+            muestreoArr={rangeItem.samplings as Array<SamplingCreateInput>}
+            rangeItemIndex={indexRange}
+            useFormHook={useFormHook}
+
+          />
+        </div>
       </div>
     )
   })
 
 }
+
+const MuestreoComponente = ({
+  muestreoArr,
+  rangeItemIndex,
+  useFormHook
+}: {
+  muestreoArr: Array<SamplingCreateInput>,
+  rangeItemIndex: number,
+  useFormHook: UseFormReturn<RangoForm, any, undefined>,
+}) => {
+
+  const {
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+  return (
+    <>
+      {
+        muestreoArr?.map((muestreoItem, indexRange, arr) => {
+          return (
+            <div
+              key={`index-range-m-${muestreoItem.id}`}
+              style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
+
+              <Controller
+                name={`rangos.${rangeItemIndex}.samplings.${indexRange}.samplingRange.numberSamples`}
+                control={control}
+                rules={{ required: true }}
+
+                render={({ field }) =>
+                  <TextField
+                    // error={formState.errors.rangos ? !!formState.errors.rangos[indexRange]?.minimum : false}
+                    // helperText={(formState.errors.rangos && !!formState.errors.rangos[indexRange]?.minimum) && `Valor minimo requerido`}
+                    id="standard-basic-number-sample" label={muestreoItem.name} variant="standard"
+                    type='number'
+                    {...field}
+                  // onBlur={handleBlurAction}
+                  />
+                }
+              />
+            </div>
+          )
+        })}
+    </>
+
+  );
+}
+
 
 export default RangoMuestraMiniComp;
