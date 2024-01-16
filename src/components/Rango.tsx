@@ -140,6 +140,7 @@ const RangoMiniComp = ({
       </Box >
       <Button
         onClick={handleAddRangos}
+        type='button'
         startIcon={<AddSharpIcon />}
         variant='outlined'
         color="primary"

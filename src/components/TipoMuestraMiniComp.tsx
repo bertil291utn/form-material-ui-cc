@@ -91,6 +91,7 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
         }
       </Box>
       <Button
+      type='button'
         onClick={handleAddNames}
         startIcon={<AddSharpIcon />}
         variant='outlined'

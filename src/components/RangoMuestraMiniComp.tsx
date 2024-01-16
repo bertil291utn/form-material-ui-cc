@@ -102,6 +102,7 @@ const MuestreoComponente = ({
               style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
 
               <Controller
+                defaultValue=''
                 name={`rangos.${rangeItemIndex}.samplings.${indexRange}.samplingRange.numberSamples`}
                 control={control}
                 rules={{ required: true }}

@@ -18,6 +18,6 @@ interface SamplingCreateInput {
 }
 
 interface SamplingRangeCreateInput {
-  numberSamples?: number;
+  numberSamples?: string;
 }
 
