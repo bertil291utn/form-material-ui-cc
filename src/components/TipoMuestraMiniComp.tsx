@@ -21,7 +21,7 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
     getValues,
     formState,
   } = useFormHook;
-  
+
   const { fields: muestreoInputs, append, remove } = useFieldArray({
     control,
     name: `rangos.0.samplings`
@@ -34,20 +34,24 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
   }
   console.log(getValues())
 
+
+  const handleAddNames = async () => {
+    const isValidNames = await trigger(`rangos.0.samplings`);
+    if (isValidNames) {
+      append(
+        {
+          ...INIT_MUESTREO,
+          id: ((getValues()?.rangos[0].samplings as Array<SamplingCreateInput>).length + 1).toString(),
+        }
+      )
+    }
+  }
+
   const handleBlurAction = async (
     e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
   ) => {
-    // trigger(e.target.name as any);
-  }
+    trigger(e.target.name as any);
 
-  const handleAddRangos = async () => {
-
-    append(
-      {
-        ...INIT_MUESTREO,
-        id: ((getValues()?.rangos[0].samplings as Array<SamplingCreateInput>).length + 1).toString(),
-      }
-    )
   }
 
   return (
@@ -60,13 +64,13 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
                 key={`muestreo-item-${muestreoItem.id}`}
                 style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
                 <Controller
-                  name={`rangos.${0}.samplings.${indexMuestreo}.name`}
+                  name={`rangos.0.samplings.${indexMuestreo}.name`}
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) =>
                     <TextField
-                      // error={formState.errors.rangos ? !!formState.errors.rangos[indexMuestreo]?.maximum : false}
-                      // helperText={(formState.errors.rangos && !!formState.errors.rangos[indexMuestreo]?.maximum) && `Valor maximo requerido`}
+                      error={formState.errors.rangos ? !!(formState.errors.rangos[0] as any).samplings[indexMuestreo]?.name : false}
+                      helperText={(formState.errors.rangos && !!(formState.errors.rangos[0] as any).samplings[indexMuestreo]?.name ) && `Nombre requerido`}
                       id="standard-basic-v-maximum" label="Nombre" variant="standard"
                       type='text'
                       {...field}
@@ -88,7 +92,7 @@ const TipoMuestraMiniComp = ({ useFormHook }: {
         }
       </Box>
       <Button
-        onClick={handleAddRangos}
+        onClick={handleAddNames}
         startIcon={<AddSharpIcon />}
         variant='outlined'
         color="primary"

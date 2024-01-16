@@ -46,16 +46,17 @@ const AddRangoForm = ({ handleClose, open }: {
 
   const handleNext = async () => {
     const isValidRangos = await trigger("rangos");
+    const isValidNames = await trigger(`rangos.0.samplings`);
     const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
     const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
     if (!IsValidRangeDistance({ min, max })) {
       handleAlertMessage(min, max)
       return;
     }
+    if (!isValidRangos || !isValidNames) { return; }
+    
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-    if (isValidRangos) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }
 
   };
 

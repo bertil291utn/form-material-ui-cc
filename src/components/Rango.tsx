@@ -1,7 +1,7 @@
 
 import { Alert, Box, Button, IconButton, Snackbar, TextField } from '@mui/material';
 import AddSharpIcon from '@mui/icons-material/AddSharp';
-import { Controller, UseFieldArrayReturn, UseFormReturn,useFieldArray } from 'react-hook-form';
+import { Controller, UseFieldArrayReturn, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { RangoForm } from '@/interfaces/RangoForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FocusEvent, useState } from 'react';
@@ -66,7 +66,7 @@ const RangoMiniComp = ({
   };
 
 
-  const _handleRemoveDetail = (index: number) => async () => {
+  const _handleRemoveDetail = (index: number) => () => {
     remove(index)
 
   }
