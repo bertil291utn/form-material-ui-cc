@@ -2,7 +2,7 @@ import { IsValidRangeDistance } from '@/app/utils/Rango.utils';
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
-import { RangoForm } from '@/interfaces/RangoForm';
+import { RangeCreateInput, RangoForm, SamplingCreateInput } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
 import { Alert, Box, Button, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -30,6 +30,7 @@ const AddRangoForm = ({ handleClose, open }: {
   });
 
   const {
+    setValue,
     getValues,
     control,
     trigger,
@@ -55,10 +56,21 @@ const AddRangoForm = ({ handleClose, open }: {
     }
     if (!isValidRangos || !isValidNames) { return; }
 
+    if (activeStep == PageType.TIPO_MUESTRA) {
+      const _rangos = [...getValues().rangos]
+      setValue("rangos",
+        _rangos.map((rango: RangeCreateInput) => (
+          {
+            ...rango,
+            samplings: [...(_rangos[0].samplings as Array<SamplingCreateInput>)]
+          }
+        ))
+      )
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-
   };
+
+  console.log(watch("rangos"))
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);

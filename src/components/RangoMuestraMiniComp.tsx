@@ -14,7 +14,6 @@ const RangoMuestraMiniComp = ({
     formState,
   } = useFormHook;
 
-  console.log(getValues())
 
   return (
     <Box>
