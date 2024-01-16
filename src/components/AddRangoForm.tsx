@@ -67,6 +67,11 @@ const AddRangoForm = ({ handleClose, open }: {
         ))
       )
     }
+    if (activeStep == PageType.RANGO_MUESTRA) { 
+      console.log('add range')
+      //wait 2 sec then close modal
+      //TODO: store in a redux object to add, edit & view
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
