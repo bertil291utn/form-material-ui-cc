@@ -11,8 +11,25 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewRanges } from '@/redux/Range.reducer';
 import { RangeFormSelector } from '@/redux/selectors';
+import { Range } from '@/interfaces/Range';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
+const generateInitRangos = (_rangos: Array<Range>) => {
+  return {
+    id: '1',
+    minimum: _rangos?.length
+      ? (Number(_rangos[_rangos.length - 1].maximum) + 1).toString()
+      : '1',
+    maximum: '',
+    samplings: [
+      {
+        id: '1',
+        name: '',
+        samplingRange: { id: '1', numberSamples: '' },
+      },
+    ],
+  };
+};
 
 
 const AddRangoForm = ({ handleClose, open }: {
@@ -21,26 +38,12 @@ const AddRangoForm = ({ handleClose, open }: {
 }) => {
   const _rangos = useSelector(RangeFormSelector)
 
-
-  const INIT_RANGOS = {
-    id: '1',
-    minimum:
-      _rangos?.length
-        ?
-        (Number(_rangos[_rangos.length - 1].maximum) + 1).toString()
-        :
-        '1',
-    maximum: '',
-    samplings: [{
-      id: '1',
-      name: '',
-      samplingRange: { id: '1', numberSamples: '' }
-    }]
-  }
-
+  const INIT_RANGOS = generateInitRangos(_rangos);
   const useFormHook = useForm<RangoForm>({
     defaultValues: { rangos: [INIT_RANGOS] }
   });
+
+  
 
   const {
     reset,
@@ -53,6 +56,10 @@ const AddRangoForm = ({ handleClose, open }: {
     watch,
     formState: { errors },
   } = useFormHook;
+
+  useEffect(() => {
+    setValue('rangos', [INIT_RANGOS]);
+  }, [_rangos, setValue]);
 
   const [activeStep, setActiveStep] = useState(0);
   const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
