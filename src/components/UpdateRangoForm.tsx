@@ -11,7 +11,7 @@ import { Controller, SubmitHandler, UseFormReturn, useFieldArray, useForm } from
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewRanges } from '@/redux/Range.reducer';
 import { RangeFormSelector } from '@/redux/selectors';
-import { Range } from '@/interfaces/Range';
+import { Range, RangeUpdateForm } from '@/interfaces/Range';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
 const generateInitRangos = (_rangos: Array<Range>) => {
@@ -40,7 +40,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
   const _rangos = useSelector(RangeFormSelector)
 
   const INIT_RANGOS = generateInitRangos(_rangos);
-  const useFormHook = useForm<Range>({
+  const useFormHook = useForm<RangeUpdateForm>({
     // defaultValues: { rangos: [INIT_RANGOS] }
   });
 
@@ -62,17 +62,12 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
     // setValue('rangos', [INIT_RANGOS]);
   }, [_rangos, setValue]);
 
-  useEffect(()=>{
-    setValue("id",data.id)
-    setValue("minimum",data.minimum)
-    setValue("maximum",data.maximum)
-    setValue("status",data.status)
-    setValue("samplingRanges",data.samplingRanges)
+  useEffect(() => {
+    setValue("rango", data)
 
-  },[data])
+  }, [data])
 
-  console.log(getValues())
-  console.log(data)
+  console.log(watch("rango"))
 
   const [activeStep, setActiveStep] = useState(0);
   const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
@@ -130,7 +125,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
     p: 4,
   };
 
-  const onSubmit: SubmitHandler<Range> = async (data) => {
+  const onSubmit: SubmitHandler<RangeUpdateForm> = async (data) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     await sleep(2000)
     handleClose()
@@ -262,7 +257,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
 const RangoUpdate = (
   { useFormHook
   }: {
-    useFormHook: UseFormReturn<Range, any, undefined>,
+    useFormHook: UseFormReturn<RangeUpdateForm, any, undefined>,
   }) => {
 
   const {
@@ -277,7 +272,7 @@ const RangoUpdate = (
         style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
 
         <Controller
-          name={`minimum`}
+          name={`rango.minimum`}
           control={control}
           render={({ field }) =>
             <TextField
@@ -288,7 +283,7 @@ const RangoUpdate = (
           }
         />
         <Controller
-          name={`maximum`}
+          name={`rango.maximum`}
           control={control}
           render={({ field }) =>
             <TextField

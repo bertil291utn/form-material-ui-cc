@@ -1,3 +1,6 @@
+export interface RangeUpdateForm {
+  rango: Range
+}
 export interface Range {
   id: string
   maximum: string
