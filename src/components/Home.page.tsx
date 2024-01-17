@@ -51,8 +51,6 @@ const columns: Array<GridColDef> = [
 ]
 
 
-//TODO: set rows data into redux in a new layout comp
-// and get data from redux in this same page
 
 export default function HomePage() {
   const _rangos = useSelector(RangeFormSelector)

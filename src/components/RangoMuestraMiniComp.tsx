@@ -87,11 +87,13 @@ const MuestreoComponente = ({
 }) => {
 
   const {
+    watch,
     trigger,
     control,
     getValues,
     formState,
   } = useFormHook;
+
   return (
     <>
       {
@@ -102,19 +104,28 @@ const MuestreoComponente = ({
               style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
 
               <Controller
+                defaultValue={muestreoItem.id}
+                name={`rangos.${rangeItemIndex}.samplings.${indexRange}.samplingRange.id`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) =>
+                  <TextField
+                  sx={{display:'none'}}
+                    id="standard-basic-number-sample123" 
+                    {...field}
+                  />
+                }
+              />
+              <Controller
                 defaultValue=''
                 name={`rangos.${rangeItemIndex}.samplings.${indexRange}.samplingRange.numberSamples`}
                 control={control}
                 rules={{ required: true }}
-
                 render={({ field }) =>
                   <TextField
-                    // error={formState.errors.rangos ? !!formState.errors.rangos[indexRange]?.minimum : false}
-                    // helperText={(formState.errors.rangos && !!formState.errors.rangos[indexRange]?.minimum) && `Valor minimo requerido`}
                     id="standard-basic-number-sample" label={muestreoItem.name} variant="standard"
                     type='number'
                     {...field}
-                  // onBlur={handleBlurAction}
                   />
                 }
               />

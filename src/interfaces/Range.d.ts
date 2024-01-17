@@ -1,14 +1,14 @@
 export interface Range {
   id: string
-  maximum: number
-  minimum: number
+  maximum: string
+  minimum: string
   status: boolean
   samplingRanges: Array<SamplingRange>
 }
 
 export interface SamplingRange {
   id: string
-  numberSamples: number
+  numberSamples: string
   sampling: Sampling
 }
 

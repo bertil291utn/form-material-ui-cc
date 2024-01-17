@@ -3,11 +3,14 @@ import { sleep } from '@/utils/sleep';
 import RangoMiniComp from '@/components/Rango';
 import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
-import { RangeCreateInput, RangoForm, SamplingCreateInput } from '@/interfaces/RangoForm';
+import { RangeCreateInput, RangoForm, SamplingCreateInput, SamplingRangeCreateInput } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
 import { Alert, Box, Button, CircularProgress, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { addNewRanges } from '@/redux/Range.reducer';
+import { RangeFormSelector } from '@/redux/selectors';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
 
@@ -16,14 +19,22 @@ const AddRangoForm = ({ handleClose, open }: {
   handleClose: () => void
   open: boolean
 }) => {
+  const _rangos = useSelector(RangeFormSelector)
+
+
   const INIT_RANGOS = {
     id: '1',
-    minimum: '',
+    minimum:
+      _rangos?.length
+        ?
+        (Number(_rangos[_rangos.length - 1].maximum) + 1).toString()
+        :
+        '1',
     maximum: '',
     samplings: [{
       id: '1',
       name: '',
-      samplingRange: { numberSamples: '' }
+      samplingRange: { id: '1', numberSamples: '' }
     }]
   }
 
@@ -48,6 +59,8 @@ const AddRangoForm = ({ handleClose, open }: {
 
 
 
+  const dispatch = useDispatch()
+
   const handleNext = async () => {
     const isValidRangos = await trigger("rangos");
     const isValidNames = await trigger(`rangos.0.samplings`);
@@ -71,7 +84,7 @@ const AddRangoForm = ({ handleClose, open }: {
       )
     }
 
-      
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -97,16 +110,26 @@ const AddRangoForm = ({ handleClose, open }: {
     p: 4,
   };
 
-  const onSubmit: SubmitHandler<RangoForm> = async(data) => {
+  const onSubmit: SubmitHandler<RangoForm> = async (data) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     await sleep(2000)
     handleClose()
     reset()
     setActiveStep(0);
-    console.log(data)
-
-    //TODO: store in a redux object to add, edit & view
-  
+    dispatch(addNewRanges(
+      data.rangos.map((rango) => (
+        {
+          ...rango,
+          status: true,
+          samplingRanges: (rango?.samplings ?? []).map(samp => (
+            {
+              id: samp.samplingRange?.id as string,
+              numberSamples: samp.samplingRange?.numberSamples as string,
+              sampling: samp
+            }))
+        }
+      ))
+    ))
   }
 
   const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {

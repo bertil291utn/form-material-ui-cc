@@ -20,9 +20,12 @@ export const RangeFormSlice = createSlice({
     initialSetRangeForm: (store, { payload }: PayloadAction<Array<Range>>) => {
       store.rangos = [...payload]
     },
+    addNewRanges: (store, { payload }: PayloadAction<Array<Range>>) => {
+      store.rangos = [...store.rangos, ...payload]
+    },
   },
 })
 
-export const { initialSetRangeForm } = RangeFormSlice.actions
+export const { initialSetRangeForm,addNewRanges } = RangeFormSlice.actions
 
 export default RangeFormSlice.reducer
