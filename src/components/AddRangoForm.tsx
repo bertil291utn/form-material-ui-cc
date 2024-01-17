@@ -43,7 +43,7 @@ const AddRangoForm = ({ handleClose, open }: {
     defaultValues: { rangos: [INIT_RANGOS] }
   });
 
-  
+
 
   const {
     reset,
@@ -128,12 +128,14 @@ const AddRangoForm = ({ handleClose, open }: {
         {
           ...rango,
           status: true,
-          samplingRanges: (rango?.samplings ?? []).map(samp => (
-            {
+          samplingRanges: (rango?.samplings ?? []).map(samp => {
+            const { samplingRange, ...restSamp } = samp;
+            return {
               id: samp.samplingRange?.id as string,
               numberSamples: samp.samplingRange?.numberSamples as string,
-              sampling: samp
-            }))
+              sampling: restSamp
+            }
+          })
         }
       ))
     ))
