@@ -12,51 +12,58 @@ import { useState } from 'react';
 import AddRangoForm from '@/components/AddRangoForm';
 import { useSelector } from 'react-redux';
 import { RangeFormSelector } from '@/redux/selectors';
+import UpdateRangoForm from '@/components/UpdateRangoForm';
+import { Range } from '@/interfaces/Range';
 
 
-const columns: Array<GridColDef> = [
-  { headerName: 'Minimo', field: 'minimo' },
-  { headerName: 'Maximo', field: 'maximo' },
-  {
-    headerName: 'Estado', field: 'estado',
-    renderCell: (params) =>
-    (
-      <>
-        <Switch {...{ inputProps: { 'aria-label': 'Switch demo' } }} checked={params.row.estado} />
-      </>
-    )
-
-  },
-  {
-    width: 140,
-    headerName: 'Acciones',
-    field: 'acciones',
-    renderCell: (params) => (
-      <>
-        <IconButton aria-label="edit" size="small" title='Editar'>
-          <EditIcon />
-        </IconButton>
-        <IconButton aria-label="delete" size="small" title='Eliminar'>
-          <DeleteIcon />
-        </IconButton>
-        <IconButton aria-label="comment" size="small" title='Ver comentario'>
-          <CommentSharpIcon />
-        </IconButton>
-        <IconButton aria-label="ver" size="small" title='Ver'>
-          <RemoveRedEyeSharpIcon />
-        </IconButton>
-      </>
-    ),
-  },
-]
 
 
 
 export default function HomePage() {
+  const columns: Array<GridColDef> = [
+    { headerName: 'Minimo', field: 'minimo' },
+    { headerName: 'Maximo', field: 'maximo' },
+    {
+      headerName: 'Estado', field: 'estado',
+      renderCell: (params) =>
+      (
+        <>
+          <Switch {...{ inputProps: { 'aria-label': 'Switch demo' } }} checked={params.row.estado} />
+        </>
+      )
+
+    },
+    {
+      width: 140,
+      headerName: 'Acciones',
+      field: 'acciones',
+      renderCell: (params) => (
+        <>
+          <IconButton aria-label="edit" size="small" title='Editar'
+            onClick={handleUpdateRange(params)}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton aria-label="delete" size="small" title='Eliminar'>
+            <DeleteIcon />
+          </IconButton>
+          <IconButton aria-label="comment" size="small" title='Ver comentario'>
+            <CommentSharpIcon />
+          </IconButton>
+          <IconButton aria-label="ver" size="small" title='Ver'>
+            <RemoveRedEyeSharpIcon />
+          </IconButton>
+        </>
+      ),
+    },
+  ]
+
   const _rangos = useSelector(RangeFormSelector)
   const [open, setOpen] = useState(false);
+  const [openUpdateRangeForm, setOpenUpdateRangeForm] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleCloseUpdateForm = () => setOpenUpdateRangeForm(false);
 
   const rows = _rangos.map(data => (
     {
@@ -64,8 +71,13 @@ export default function HomePage() {
       minimo: data.minimum,
       maximo: data.maximum,
       estado: data.status,
+      samplingRanges: data.samplingRanges,
     }
   ));
+
+  const handleUpdateRange = (params: any) =>()=> {
+    console.log("🚀 ~ handleUpdateRange ~ params:", params)
+  }
 
   return (
     <div>
@@ -86,6 +98,11 @@ export default function HomePage() {
       <AddRangoForm
         handleClose={handleClose}
         open={open}
+      />
+      <UpdateRangoForm
+        handleClose={handleCloseUpdateForm}
+        open={openUpdateRangeForm}
+        data={{ id: 'range' } as Range}
       />
     </div>
   )
