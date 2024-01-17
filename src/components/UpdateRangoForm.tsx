@@ -5,9 +5,9 @@ import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
 import { RangeCreateInput, RangoForm, SamplingCreateInput, SamplingRangeCreateInput } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
-import { Alert, Box, Button, CircularProgress, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewRanges } from '@/redux/Range.reducer';
 import { RangeFormSelector } from '@/redux/selectors';
@@ -40,8 +40,8 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
   const _rangos = useSelector(RangeFormSelector)
 
   const INIT_RANGOS = generateInitRangos(_rangos);
-  const useFormHook = useForm<RangoForm>({
-    defaultValues: { rangos: [INIT_RANGOS] }
+  const useFormHook = useForm<Range>({
+    // defaultValues: { rangos: [INIT_RANGOS] }
   });
 
 
@@ -59,8 +59,20 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
   } = useFormHook;
 
   useEffect(() => {
-    setValue('rangos', [INIT_RANGOS]);
+    // setValue('rangos', [INIT_RANGOS]);
   }, [_rangos, setValue]);
+
+  useEffect(()=>{
+    setValue("id",data.id)
+    setValue("minimum",data.minimum)
+    setValue("maximum",data.maximum)
+    setValue("status",data.status)
+    setValue("samplingRanges",data.samplingRanges)
+
+  },[data])
+
+  console.log(getValues())
+  console.log(data)
 
   const [activeStep, setActiveStep] = useState(0);
   const [distanceRangeErrorMsg, setDistanceRangeErrorMsg] = useState('')
@@ -70,27 +82,27 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
   const dispatch = useDispatch()
 
   const handleNext = async () => {
-    const isValidRangos = await trigger("rangos");
-    const isValidNames = await trigger(`rangos.0.samplings`);
-    const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
-    const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
-    if (!IsValidRangeDistance({ min, max })) {
-      handleAlertMessage(min, max)
-      return;
-    }
-    if (!isValidRangos || !isValidNames) { return; }
+    // const isValidRangos = await trigger("rangos");
+    // const isValidNames = await trigger(`rangos.0.samplings`);
+    // const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
+    // const max = Number(getValues().rangos[getValues().rangos.length - 1].maximum);
+    // if (!IsValidRangeDistance({ min, max })) {
+    //   handleAlertMessage(min, max)
+    //   return;
+    // }
+    // if (!isValidRangos || !isValidNames) { return; }
 
-    if (activeStep == PageType.TIPO_MUESTRA) {
-      const _rangos = [...getValues().rangos]
-      setValue("rangos",
-        _rangos.map((rango: RangeCreateInput) => (
-          {
-            ...rango,
-            samplings: [...(_rangos[0].samplings as Array<SamplingCreateInput>)]
-          }
-        ))
-      )
-    }
+    // if (activeStep == PageType.TIPO_MUESTRA) {
+    //   const _rangos = [...getValues().rangos]
+    //   setValue("rangos",
+    //     _rangos.map((rango: RangeCreateInput) => (
+    //       {
+    //         ...rango,
+    //         samplings: [...(_rangos[0].samplings as Array<SamplingCreateInput>)]
+    //       }
+    //     ))
+    //   )
+    // }
 
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -118,26 +130,26 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
     p: 4,
   };
 
-  const onSubmit: SubmitHandler<RangoForm> = async (data) => {
+  const onSubmit: SubmitHandler<Range> = async (data) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     await sleep(2000)
     handleClose()
     reset()
     setActiveStep(0);
-    dispatch(addNewRanges(
-      data.rangos.map((rango) => (
-        {
-          ...rango,
-          status: true,
-          samplingRanges: (rango?.samplings ?? []).map(samp => (
-            {
-              id: samp.samplingRange?.id as string,
-              numberSamples: samp.samplingRange?.numberSamples as string,
-              sampling: samp
-            }))
-        }
-      ))
-    ))
+    // dispatch(addNewRanges(
+    //   data.rangos.map((rango) => (
+    //     {
+    //       ...rango,
+    //       status: true,
+    //       samplingRanges: (rango?.samplings ?? []).map(samp => (
+    //         {
+    //           id: samp.samplingRange?.id as string,
+    //           numberSamples: samp.samplingRange?.numberSamples as string,
+    //           sampling: samp
+    //         }))
+    //     }
+    //   ))
+    // ))
   }
 
   const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -162,7 +174,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        {/* <Stepper activeStep={activeStep} alternativeLabel>
+        <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
             const labelProps: {
@@ -189,12 +201,11 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
               >
 
                 {activeStep == PageType.RANGO &&
-                  <RangoMiniComp
+                  <RangoUpdate
                     useFormHook={useFormHook}
-                    handleAlertMessage={handleAlertMessage}
                   />
                 }
-                {activeStep == PageType.TIPO_MUESTRA &&
+                {/* {activeStep == PageType.TIPO_MUESTRA &&
                   <TipoMuestraMiniComp
                     useFormHook={useFormHook}
                   />
@@ -203,7 +214,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
                   <RangoMuestraMiniComp
                     useFormHook={useFormHook}
                   />
-                }
+                } */}
               </div>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
                 {activeStep !== 0 &&
@@ -239,12 +250,57 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
               </Box>
             </form>
           </>
-        )} */}
+        )}
 
-        {JSON.stringify(data)}
+        {/* {JSON.stringify(data)} */}
       </Box>
     </Modal>
   );
+}
+
+
+const RangoUpdate = (
+  { useFormHook
+  }: {
+    useFormHook: UseFormReturn<Range, any, undefined>,
+  }) => {
+
+  const {
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+  return (
+    <div>
+      <div
+        style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
+
+        <Controller
+          name={`minimum`}
+          control={control}
+          render={({ field }) =>
+            <TextField
+              id="standard-basic-v-minimum" label="Valor minimo" variant="standard"
+              type='number'
+              {...field}
+            />
+          }
+        />
+        <Controller
+          name={`maximum`}
+          control={control}
+          render={({ field }) =>
+            <TextField
+              id="standard-basic-v-maximum" label="Valor minimo" variant="standard"
+              type='number'
+              {...field}
+            />
+          }
+        />
+      </div>
+    </div>
+  )
 }
 
 export default UpdateRangoForm;

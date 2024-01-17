@@ -21,8 +21,8 @@ import { Range } from '@/interfaces/Range';
 
 export default function HomePage() {
   const columns: Array<GridColDef> = [
-    { headerName: 'Minimo', field: 'minimo' },
-    { headerName: 'Maximo', field: 'maximo' },
+    { headerName: 'Minimo', field: 'minimum' },
+    { headerName: 'Maximo', field: 'maximum' },
     {
       headerName: 'Estado', field: 'estado',
       renderCell: (params) =>
@@ -69,8 +69,8 @@ export default function HomePage() {
   const rows = _rangos.map(data => (
     {
       id: data.id,
-      minimo: data.minimum,
-      maximo: data.maximum,
+      minimum: data.minimum,
+      maximum: data.maximum,
       estado: data.status,
       samplingRanges: data.samplingRanges,
     }
