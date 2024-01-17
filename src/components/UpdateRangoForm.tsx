@@ -161,8 +161,8 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      {/* <Box sx={style}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+      <Box sx={style}>
+        {/* <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label, index) => {
             const stepProps: { completed?: boolean } = {};
             const labelProps: {
@@ -239,12 +239,10 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
               </Box>
             </form>
           </>
-        )}
+        )} */}
 
-      </Box> */}
-      <>
-        edit modal
-      </>
+        {JSON.stringify(data)}
+      </Box>
     </Modal>
   );
 }

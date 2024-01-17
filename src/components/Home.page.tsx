@@ -2,7 +2,7 @@
 
 import DataGridBasicTable from '@/components/Table';
 import { Button, IconButton, Switch } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import { GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CommentSharpIcon from '@mui/icons-material/CommentSharp';
@@ -64,6 +64,7 @@ export default function HomePage() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleCloseUpdateForm = () => setOpenUpdateRangeForm(false);
+  const [currentUpdateRow, setCurrentUpdateRow] = useState<Range>({} as Range)
 
   const rows = _rangos.map(data => (
     {
@@ -75,8 +76,9 @@ export default function HomePage() {
     }
   ));
 
-  const handleUpdateRange = (params: any) =>()=> {
-    console.log("🚀 ~ handleUpdateRange ~ params:", params)
+  const handleUpdateRange = (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => () => {
+    setOpenUpdateRangeForm(true)
+    setCurrentUpdateRow(params.row)
   }
 
   return (
@@ -102,7 +104,7 @@ export default function HomePage() {
       <UpdateRangoForm
         handleClose={handleCloseUpdateForm}
         open={openUpdateRangeForm}
-        data={{ id: 'range' } as Range}
+        data={currentUpdateRow}
       />
     </div>
   )
