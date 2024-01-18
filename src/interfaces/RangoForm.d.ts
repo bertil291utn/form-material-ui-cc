@@ -1,6 +1,9 @@
 export interface RangoForm {
   rangos: Array<RangeCreateInput>
 }
+export interface RangoUpdateForm {
+  rango: RangeCreateInput
+}
 
 interface RangeCreateInput {
   id: string

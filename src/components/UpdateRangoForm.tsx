@@ -5,13 +5,16 @@ import RangoMuestraMiniComp from '@/components/RangoMuestraMiniComp';
 import TipoMuestraMiniComp from '@/components/TipoMuestraMiniComp';
 import { RangeCreateInput, RangoForm, SamplingCreateInput, SamplingRangeCreateInput } from '@/interfaces/RangoForm';
 import { PageType } from '@/interfaces/RangoStep.enum';
-import { Alert, Box, Button, CircularProgress, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Alert, Box, Button, CircularProgress, IconButton, Modal, Snackbar, Step, StepButton, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { FocusEvent, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, UseFormReturn, useFieldArray, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { addNewRanges } from '@/redux/Range.reducer';
 import { RangeFormSelector } from '@/redux/selectors';
-import { Range, RangeUpdateForm } from '@/interfaces/Range';
+import { Range } from '@/interfaces/Range';
+import { RangoUpdateForm } from '@/interfaces/RangoForm';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddSharpIcon from '@mui/icons-material/AddSharp';
 
 const steps = ['Rango', 'Tipo muestra', 'Rango muestreo'];
 const generateInitRangos = (_rangos: Array<Range>) => {
@@ -40,7 +43,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
   const _rangos = useSelector(RangeFormSelector)
 
   const INIT_RANGOS = generateInitRangos(_rangos);
-  const useFormHook = useForm<RangeUpdateForm>({
+  const useFormHook = useForm<RangoUpdateForm>({
     // defaultValues: { rangos: [INIT_RANGOS] }
   });
 
@@ -125,7 +128,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
     p: 4,
   };
 
-  const onSubmit: SubmitHandler<RangeUpdateForm> = async (data) => {
+  const onSubmit: SubmitHandler<RangoUpdateForm> = async (data) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     await sleep(2000)
     handleClose()
@@ -200,12 +203,12 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
                     useFormHook={useFormHook}
                   />
                 }
-                {/* {activeStep == PageType.TIPO_MUESTRA &&
-                  <TipoMuestraMiniComp
+                {activeStep == PageType.TIPO_MUESTRA &&
+                  <TipoMuestraUpdate
                     useFormHook={useFormHook}
                   />
                 }
-                {activeStep == PageType.RANGO_MUESTRA &&
+                {/* {activeStep == PageType.RANGO_MUESTRA &&
                   <RangoMuestraMiniComp
                     useFormHook={useFormHook}
                   />
@@ -247,7 +250,6 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
           </>
         )}
 
-        {/* {JSON.stringify(data)} */}
       </Box>
     </Modal>
   );
@@ -257,7 +259,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
 const RangoUpdate = (
   { useFormHook
   }: {
-    useFormHook: UseFormReturn<RangeUpdateForm, any, undefined>,
+    useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
   }) => {
 
   const {
@@ -296,6 +298,103 @@ const RangoUpdate = (
       </div>
     </div>
   )
+}
+
+const TipoMuestraUpdate = ({ useFormHook }: {
+  useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
+}) => {
+
+
+  const INIT_MUESTREO = {
+    id: '1',
+    name: '',
+  }
+
+  const {
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+
+  const { fields: muestreoInputs, append, remove } = useFieldArray({
+    control,
+    name: `rango.samplingRanges` as any
+  })
+
+
+  const _handleRemoveDetail = (index: number) => async () => {
+    remove(index)
+
+  }
+
+
+  const handleAddNames = async () => {
+    const isValidNames = await trigger(`rango.samplings`);
+    if (isValidNames) {
+      append(
+        {
+          ...INIT_MUESTREO,
+          id: (getValues()?.rango.samplings ?? [].length + 1).toString(),
+        }
+      )
+    }
+  }
+
+  const handleBlurAction = async (
+    e: FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
+  ) => {
+    // trigger(e.target.name as any);
+
+  }
+
+  return (
+    <>
+      <Box>
+        {
+          muestreoInputs?.map((muestreoItem, indexMuestreo, arr) => {
+            return (
+              <div
+                key={`muestreo-item-${muestreoItem.id}`}
+                style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
+                <Controller
+                  name={`rango.samplingRanges.${indexMuestreo}.sampling.name` as any}
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) =>
+                    <TextField
+                      id="standard-basic-name" label="Nombre" variant="standard"
+                      type='text'
+                      {...field}
+                      onBlur={handleBlurAction}
+                    />
+                  }
+                />
+                {arr.length > 1 &&
+                  <IconButton aria-label="delete" size="small" title='Eliminar rango'
+                    type='button'
+                    onClick={_handleRemoveDetail(indexMuestreo)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              </div>
+            )
+          })
+        }
+      </Box>
+      <Button
+        type='button'
+        onClick={handleAddNames}
+        startIcon={<AddSharpIcon />}
+        variant='outlined'
+        color="primary"
+        sx={{ mt: 4 }}
+      >
+        Agregar
+      </Button>
+    </>
+  );
 }
 
 export default UpdateRangoForm;
