@@ -79,7 +79,7 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
 
   const dispatch = useDispatch()
 
-  const handleNext = async () => {
+  const handleNext = () => {
     // const isValidRangos = await trigger("rangos");
     // const isValidNames = await trigger(`rangos.0.samplings`);
     // const min = Number(getValues().rangos[getValues().rangos.length - 1].minimum);
@@ -101,7 +101,6 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
     //     ))
     //   )
     // }
-
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -208,11 +207,11 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
                     useFormHook={useFormHook}
                   />
                 }
-                {/* {activeStep == PageType.RANGO_MUESTRA &&
-                  <RangoMuestraMiniComp
+                {activeStep == PageType.RANGO_MUESTRA &&
+                  <RangoMuestraUpdate
                     useFormHook={useFormHook}
                   />
-                } */}
+                }
               </div>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
                 {activeStep !== 0 &&
@@ -225,20 +224,21 @@ const UpdateRangoForm = ({ handleClose, open, data }: {
                   >
                     volver
                   </Button>}
-                {activeStep !== steps.length - 1 ?
-                  <Button
-                    type={'button'}
-                    variant='contained'
-                    onClick={handleNext}>
-                    {'siguiente'}
-                  </Button>
-                  :
-                  <Button
-                    type={'submit'}
-                    variant='contained'
-                  >
-                    {'finalizar'}
-                  </Button>
+                {
+                  activeStep !== steps.length ?
+                    <Button
+                      type={'button'}
+                      variant='contained'
+                      onClick={handleNext}>
+                      {'siguiente'}
+                    </Button>
+                    :
+                    <Button
+                      type={'submit'}
+                      variant='contained'
+                    >
+                      {'finalizar'}
+                    </Button>
                 }
                 <Snackbar open={!!distanceRangeErrorMsg} autoHideDuration={4000} onClose={handleCloseAlert}>
                   <Alert onClose={handleCloseAlert} severity="warning" sx={{ width: '100%' }}>
@@ -299,6 +299,7 @@ const RangoUpdate = (
     </div>
   )
 }
+
 
 const TipoMuestraUpdate = ({ useFormHook }: {
   useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
@@ -396,5 +397,134 @@ const TipoMuestraUpdate = ({ useFormHook }: {
     </>
   );
 }
+
+const RangoMuestraUpdate = ({ useFormHook }: {
+  useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
+}) => {
+  const {
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+
+
+  return (
+    <Box>
+      <RangeComponente
+        useFormHook={useFormHook}
+      />
+    </Box>
+  );
+}
+
+
+
+const RangeComponente = ({
+  useFormHook,
+}: {
+  useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
+}) => {
+  const {
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+
+  const range = { ...getValues().rango }
+
+  return (
+    <div
+      style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}
+    >
+
+      <Controller
+        disabled
+        name={`rango.tempDisplay`}
+        control={control}
+        defaultValue={`${range.minimum}-${range.maximum}`}
+        render={({ field }) =>
+          <TextField
+            id="standard-basic-range" label="Rango" variant="standard"
+            type='text'
+            {...field}
+          />
+        }
+      />
+      <div
+        style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}
+      >
+        <MuestreoComponente
+          muestreoArr={`range.samplingRanges` as any}
+          useFormHook={useFormHook}
+
+        />
+      </div>
+    </div>
+  )
+
+}
+
+const MuestreoComponente = ({
+  muestreoArr,
+  useFormHook
+}: {
+  muestreoArr: Array<SamplingCreateInput>,
+  useFormHook: UseFormReturn<RangoUpdateForm, any, undefined>,
+}) => {
+
+  const {
+    watch,
+    trigger,
+    control,
+    getValues,
+    formState,
+  } = useFormHook;
+
+  return (
+    <>
+      {
+        muestreoArr?.map((muestreoItem, indexRange, arr) => {
+          return (
+            <div
+              key={`index-range-m-${muestreoItem.id}`}
+              style={{ display: 'flex', gap: '3rem', alignItems: 'flex-end' }}>
+
+              <Controller
+                defaultValue={muestreoItem.id}
+                name={`rango.samplings.${indexRange}.samplingRange.id`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) =>
+                  <TextField
+                    sx={{ display: 'none' }}
+                    id="standard-basic-number-sample123"
+                    {...field}
+                  />
+                }
+              />
+              <Controller
+                defaultValue=''
+                name={`rango.samplings.${indexRange}.samplingRange.numberSamples`}
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) =>
+                  <TextField
+                    id="standard-basic-number-sample" label={muestreoItem.name} variant="standard"
+                    type='number'
+                    {...field}
+                  />
+                }
+              />
+            </div>
+          )
+        })}
+    </>
+
+  );
+}
+
+
 
 export default UpdateRangoForm;
